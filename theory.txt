@@ -1,0 +1,90 @@
+mkdir devboard means it will create a folder named devboard
+cd devboard means all further files and operations will be done in this folder
+npm init -y npm manages all the external code libraries the project will need
+init means initialize you are telling npm set up this folder as a proper Node.js project
+-y means yes to all 8 conditions 
+
+in package.json
+"name": "devboard" — Your project's name. Came from the folder name automatically.
+"version": "1.0.0" — Version of your project. Doesn't matter right now.
+"description" — Empty. Fine, ignore it.
+"main": "index.js" — This tells Node which file is the entry point of your app. 
+See it says index.js by default. We're naming ours server.js so change this to:
+"scripts" — This is important. This is where you define shortcuts for terminal commands.
+like start So instead of typing node server.js every time, you just type npm start
+This tells Node you're using modern ES module syntax — the same import/export you used in frontend JavaScript.
+
+Your JS object
+      ↓
+JSON.stringify() → becomes a string
+      ↓
+HTTP sends it across the internet
+      ↓
+Client receives the string
+      ↓
+JSON.parse() → becomes a JS object again
+
+
+// http is a built-in Node.js module. It came pre-installed the moment you installed Node on your computer.
+//  No npm install needed. It's like a built-in tool that Node gives you for free.
+// http is Node's pre-installed app 
+// for handling internet communication — receiving requests, sending responses, running a server.
+import http from 'http';
+// You can only send a response once. The moment you call res.end() — that request is done.
+const server = http.createServer((req,res)=>{
+if (req.method === 'GET' && req.url=== '/' ){
+    //200 is the status code.Its a no your server sends to tell the client what happened
+    // 200 — OK, everything worked
+   // 201 — Created, new thing was made
+  // 400 — Bad request, client sent wrong data
+   // 401 — Unauthorised, not logged in
+   // 404 — Not found
+  // 500 — Server crashed, your fault
+
+//   The { 'Content-Type': 'application/json' } is the header. Headers are metadata — they don't contain the actual data, they describe the data that's coming. This specific header tells the client "whatever I'm about to send you, treat it as JSON format."
+// Think of it like a label on a package before you open it.
+    res.writeHead(200,{'Content-Type':'application/json'});
+//     This doesn't just display the message. It sends the entire response and closes the connection. After this line, that conversation between client and server is finished. Done. No more talking.
+// The data inside res.end() is the actual body — the real content the client receives.
+    res.end(JSON.stringify({message:'Devboard API is alive'}));
+
+}
+// else if because only one route should run per request
+
+else if(req.method==='GET'&& req.url==='/tasks'){
+    const task = [
+        {id:1,title:'Node.js',status:'in progress'},
+        {id:2,title:'devboard',status:'todo'}
+    ];
+    res.writeHead(200,{'content-type':'application/json'});
+    // stringify converts the task array to strinf bcz http only understand string
+    res.end(JSON.stringify(tasks));
+}
+// post means client is sending data 
+// let bcz we have to keep adding the data 
+else if(req.method==='POST'&& req.url==='/tasks'){
+    let body = '';
+    // When someone sends data in a POST request — say a JSON object with a task title — that data doesn't arrive all at once. HTTP breaks it into small pieces called chunks and sends them one by one. Think of it like receiving a long WhatsApp message that arrives word by word instead of all at once.
+// req.on('data') is an event listener. It says "every time a new chunk arrives, run this function." Each time it runs, chunk contains that piece of data. chunk.toString() converts it from raw bytes to readable text. body += adds it to your container string.
+// By the end, body contains the complete assembled data.
+    req.on('data',  chunk=>{
+        body += chunk.toString();
+    });
+    // another event listener 
+    req.on('end',()=>{
+        const newTask=JSON.parse(body);
+        res.writeHead(201,{'content-type':'application/json'});
+    res.end(JSON.stringify({message:'Task Created',task:newTask}));
+    });
+    
+}
+else{
+    res.writeHead(404,{'content-type':'application/json'});
+    res.end(JSON.stringify({error:'Route Not Found'}));
+}
+//  server.listen(3000) — your server is built but not yet open to the world. This line switches it on and tells it to watch for incoming requests specifically on port 3000.
+
+server.listen(3000,()=>{
+    console.log("Server running on port 3000");
+});
+});
