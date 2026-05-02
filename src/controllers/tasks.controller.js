@@ -1,16 +1,16 @@
 import Task from "../models/task.model.js";
 import { io } from "../../server.js";
 
-export const getAllTasks = async(req,res)=>{
+export const getAllTasks = async(req,res,next)=>{
     try{
         const tasks = await Task.find();
         res.status(200).json(tasks);
     }catch(error){
-        res.status(500).json({error:error.message});
+        next(error);
     }
 };
 
-export const getTaskById = async(req,res)=>{
+export const getTaskById = async(req,res,next)=>{
     try{
         const task = await Task.findById(req.params.id);
         if(!task){
@@ -18,11 +18,11 @@ export const getTaskById = async(req,res)=>{
         }
         res.status(200).json(task);
     }catch(error){
-        res.status(500).json({error:error.message});
+        next(error);
     }
 };
 
-export const createTask = async(req,res)=>{
+export const createTask = async(req,res,next)=>{
     try{
         const {title,description,status}=req.body;
         const task = await Task.create({title,description,status});
@@ -31,11 +31,11 @@ export const createTask = async(req,res)=>{
 
         res.status(201).json(task);
     }catch(error){
-        res.status(400).json({error:error.message});
+       next(error);
     }
 };
 
-export const updateTask = async(req,res)=>{
+export const updateTask = async(req,res,next)=>{
     try{
         const task = await Task.findByIdAndUpdate(
                 req.params.id,
@@ -49,11 +49,11 @@ export const updateTask = async(req,res)=>{
         io.emit('task:updated',task);
         res.status(200).json(task);
     }catch(error){
-        res.status(400).json({error:error.message});
+        next(error);
     }
 };
 
-export const deleteTask = async(req,res)=>{
+export const deleteTask = async(req,res,next)=>{
     try{
         const task = await Task.findByIdAndDelete(req.params.id);
         if(!task){
@@ -63,6 +63,6 @@ export const deleteTask = async(req,res)=>{
         io.emit('task:deleted',{id:req.params.id});
         res.status(200).json({message:'Task deleted successfully'});
     }catch(error){
-        res.status(500).json({error:error.message});
+        next(error);
     }
 };
