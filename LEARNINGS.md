@@ -41,7 +41,7 @@ Built a complete backend API from scratch with:
 - Authentication and authorization
 - Real database with MongoDB
 - Real-time features with WebSockets
-- Production security layer
+- Production security  layer
 
 
 // useEffect in React is similar to this middleware pattern - runs after something happens

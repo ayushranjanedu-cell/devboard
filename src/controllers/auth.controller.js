@@ -19,7 +19,7 @@ export const register = async(req,res)=>{
         
         const existingUser = await User.findOne({email});
         if(existingUser){
-            return res.staus(400).json({error:'Email already registered'});
+            return res.staus(400).json({error:'Email already registered!'});
         }
 
         const hashedPassword = await bcrypt.hash(password,12);
@@ -31,7 +31,7 @@ export const register = async(req,res)=>{
         
         const token = generateToken(user._id);
         res.status(201).json({
-            message:'User registered Successfully',
+            message:'User registered Successfully!',
             token,
             user:{
                 id:user._id,
@@ -52,17 +52,17 @@ export const login = async(req,res)=>{
         
         const user = await User.findOne({email});
         if(!user){
-            return res.status(400).json({error:'Invalid email or password'});   
+            return res.status(400).json({error:'Invalid email or password!'});   
         }
         // verify Password
         const isPasswordCorrect = await bcrypt.compare(password,user.password);
         if(!isPasswordCorrect){
-            return res.status(400).json({error:'Invalid email or password'});
+            return res.status(400).json({error:'Invalid email or password!'});
         }
         const token = generateToken(user._id);
 
         res.status(201).json({
-            message:'Login Successful',
+            message:'Login Successful!',
             token,
             user:{
                 id:user._id,
