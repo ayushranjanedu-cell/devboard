@@ -10,7 +10,7 @@ const limiter = rateLimit({
     windowMs:15*60*1000, //15 minutes
     max: 100,//max 100 request per 15 min per IP
     message:{
-        error:'Too many request for this IP,please try again after 15 minutes'
+        error:'Too many request for this IP,please try again after 15 minutes!'
     }
 });
 
@@ -18,7 +18,7 @@ const authLimiter = rateLimit({
     windowMs:15*60*1000,
     max:10, //only 10 login attempt per 15 minutes
     message:{
-        error:'Too many login attempts,please try again after 15 minutes'
+        error:'Too many login attempts,please try again after 15 minutes!'
     }
 });
 
